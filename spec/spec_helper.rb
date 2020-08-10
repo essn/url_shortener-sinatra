@@ -6,6 +6,7 @@ require_relative '../app.rb'
 
 require 'rack/test'
 require 'shoulda/matchers'
+require 'validate_url/rspec_matcher'
 
 set :environment, :test
 set :database, :test
