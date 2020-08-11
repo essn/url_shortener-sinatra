@@ -1,12 +1,13 @@
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/reloader'
+require 'sinatra/json'
 require 'validate_url'
 require 'interactor'
 
 set :bind, '0.0.0.0' # bind to all interfaces
 
-configure :development, :test do
+configure :development do
   require 'pry'
 end
 
@@ -15,5 +16,25 @@ Dir[File.join(File.dirname(__FILE__), 'app', '**', '*.rb')].each do |file|
   also_reload file
 end
 
-get '/' do
+post '/short_url' do
+  result = CreateShortUrl.call(slug: params[:slug],
+                               original_url: params[:original_url])
+
+  if result.success?
+    short_url = ShortUrlDecorator.new(result.short_url)
+
+    status 200
+    json body: {
+      message: 'Success! Be sure to keep your secret to delete your url later.',
+      short_url: {
+        shortened_url: short_url.shortened_url,
+        secret_key: short_url.secret_key
+      }
+    }
+  else
+    status 422
+    json body: {
+      message: result.short_url.errors.full_messages
+    }
+  end
 end
