@@ -28,7 +28,7 @@ RSpec.describe 'Short Url Requests' do
         key = JSON.parse(last_response.body)
                   .dig('body', 'short_url', 'secret_key')
 
-        expect(key).to eq short_url.secret_key
+        expect(key).to eq ShortUrlDecorator.new(short_url).secret_key
       end
 
       it 'returns status 200' do
@@ -115,12 +115,30 @@ RSpec.describe 'Short Url Requests' do
 
       before { get "/#{short_url.slug}" }
 
-      it 'redirects to the original url' do
-        expect(last_response.location).to eq short_url.original_url
+      it 'returns shortened url' do
+        shortened_url = JSON.parse(last_response.body)
+                            .dig('body', 'short_url', 'shortened_url')
+
+        expect(shortened_url)
+          .to eq ShortUrlDecorator.new(short_url).shortened_url
       end
 
-      it 'returns status 303' do
-        expect(last_response.status).to eq 303
+      it 'returns original url' do
+        original_url = JSON.parse(last_response.body)
+                           .dig('body', 'short_url', 'original_url')
+
+        expect(original_url).to eq ShortUrlDecorator.new(short_url).original_url
+      end
+
+      it 'returns slug' do
+        slug = JSON.parse(last_response.body)
+                   .dig('body', 'short_url', 'slug')
+
+        expect(slug).to eq ShortUrlDecorator.new(short_url).slug
+      end
+
+      it 'returns status 200' do
+        expect(last_response.status).to eq 200
       end
     end
 

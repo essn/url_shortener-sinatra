@@ -62,9 +62,9 @@ delete '/short_url/:slug' do
 end
 
 get '/:slug' do
-  short_url = ShortUrl.find_by(slug: params[:slug])
+  stored_short_url = ShortUrl.find_by(slug: params[:slug])
 
-  unless short_url
+  unless stored_short_url
     t = %w[text/css text/html application/javascript]
 
     # Redirect to generic 404 HTML page if not found
@@ -73,5 +73,14 @@ get '/:slug' do
     halt 404, message: "Short url #{params[:slug]} does not exist."
   end
 
-  redirect short_url.original_url, 303
+  short_url = ShortUrlDecorator.new(stored_short_url)
+
+  status 200
+  json body: {
+    short_url: {
+      shortened_url: short_url.shortened_url,
+      original_url: short_url.original_url,
+      slug: short_url.slug
+    }
+  }
 end
