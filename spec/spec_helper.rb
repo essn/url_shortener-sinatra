@@ -15,6 +15,7 @@ set :database, :test
 ActiveRecord::Base.logger.level = 1
 
 ENV['RACK_ENV'] = 'test'
+ENV['BASE_URI'] = 'https://test.com'
 
 module RSpecMixin
   include Rack::Test::Methods
