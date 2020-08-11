@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/reloader'
 require 'validate_url'
+require 'interactor'
 
 set :bind, '0.0.0.0' # bind to all interfaces
 

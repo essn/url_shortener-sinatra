@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'activerecord'
+gem 'interactor', '~> 3.0'
 gem 'rake'
 gem 'sinatra'
 gem 'sinatra-activerecord'
