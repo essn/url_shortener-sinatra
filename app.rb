@@ -40,17 +40,21 @@ end
 
 delete '/short_url/:slug' do
   unless params[:secret_key]
-    halt 422, message: 'secret_key parameter is required.'
+    halt 422, { message: 'secret_key parameter is required.' }.to_json
   end
 
   short_url = ShortUrl.find_by(slug: params[:slug])
 
   unless short_url
-    halt 404, message: "Short url '#{params[:slug]}' does not exist."
+    halt 404, {
+      message: "Short url '#{params[:slug]}' does not exist."
+    }.to_json
   end
 
   if short_url.secret_key != params[:secret_key]
-    halt 402, message: 'You are not authorized to delete this short url.'
+    halt 402, {
+      message: 'You are not authorized to delete this short url.'
+    }.to_json
   end
 
   short_url.delete
