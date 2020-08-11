@@ -62,4 +62,50 @@ RSpec.describe 'Short Url Requests' do
       end
     end
   end
+
+  describe 'DELETE /short_url/:slug' do
+    describe 'success' do
+      let(:short_url) { create(:short_url) }
+
+      before do
+        delete "/short_url/#{short_url.slug}", secret_key: short_url.secret_key
+      end
+
+      it 'deletes short url' do
+        expect(ShortUrl.find_by(slug: short_url.slug)).to be nil
+      end
+
+      it 'returns status 204' do
+        expect(last_response.status).to eq 204
+      end
+    end
+
+    describe 'error' do
+      describe 'secret_key parameter is not provided' do
+        before { delete '/short_url/slug' }
+
+        it 'returns status 422' do
+          expect(last_response.status).to eq 422
+        end
+      end
+
+      describe 'short url does not exist' do
+        before { delete '/short_url/slug', secret_key: 'sshh' }
+
+        it 'returns status 404' do
+          expect(last_response.status).to eq 404
+        end
+      end
+
+      describe 'short url slug does not match secret key' do
+        let(:short_url) { create(:short_url) }
+
+        before { delete "/short_url/#{short_url.slug}", secret_key: 'nope' }
+
+        it 'returns status 402' do
+          expect(last_response.status).to eq 402
+        end
+      end
+    end
+  end
 end

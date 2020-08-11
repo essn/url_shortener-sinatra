@@ -33,8 +33,25 @@ post '/short_url' do
     }
   else
     status 422
-    json body: {
-      message: result.short_url.errors.full_messages
-    }
+    json body: { message: result.short_url.errors.full_messages }
   end
+end
+
+delete '/short_url/:slug' do
+  unless params[:secret_key]
+    halt 422, message: 'secret_key parameter is required.'
+  end
+
+  short_url = ShortUrl.find_by(slug: params[:slug])
+
+  unless short_url
+    halt 404, message: "Short url '#{params[:slug]}' does not exist."
+  end
+
+  if short_url.secret_key != params[:secret_key]
+    halt 402, message: 'You are not authorized to delete this short url.'
+  end
+
+  short_url.delete
+  status 204
 end
