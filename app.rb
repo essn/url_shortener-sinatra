@@ -12,7 +12,7 @@ configure :development do
   require 'pry'
 end
 
-Dir[File.join(File.dirname(__FILE__), 'app', '**', '*.rb')].each do |file|
+Dir[File.join(File.dirname(__FILE__), 'app', '**', '*.rb')].sort.each do |file|
   require file
   also_reload file
 end

@@ -9,6 +9,8 @@ class ShortUrlDecorator
 
   private
 
+  attr_reader :short_url
+
   def method_missing(method, *args)
     if short_url.respond_to?(method)
       short_url.send(method, *args)
@@ -24,6 +26,4 @@ class ShortUrlDecorator
   def respond_to_missing?(*args)
     true
   end
-  
-  attr_reader :short_url
 end

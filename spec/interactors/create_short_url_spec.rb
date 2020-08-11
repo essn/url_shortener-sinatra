@@ -44,7 +44,6 @@ RSpec.describe CreateShortUrl, type: :interactor do
 
         subject(:context) { CreateShortUrl.call(original_url: original_url) }
 
-
         it 'generates a unique slug' do
           expect(context.short_url.slug).to eq unique_slug
         end
