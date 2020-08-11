@@ -5,20 +5,19 @@ RSpec.describe CreateShortUrl, type: :interactor do
     describe 'with valid parameters' do
       let(:original_url) { 'https://original.url' }
 
-      subject(:context) { CreateShortUrl.call(original_url: original_url) }
-
-      it 'succeeds' do
-        expect(context).to be_a_success
-      end
-
       describe 'slug is passed in' do
         let(:slug) { 'slug' }
+
         subject(:context) do
           CreateShortUrl.call(original_url: original_url, slug: slug)
         end
 
         it 'creates ShortUrl with slug' do
           expect(context.short_url.slug).to eq slug
+        end
+
+        it 'succeeds' do
+          expect(context).to be_a_success
         end
       end
 
@@ -46,6 +45,10 @@ RSpec.describe CreateShortUrl, type: :interactor do
 
         it 'generates a unique slug' do
           expect(context.short_url.slug).to eq unique_slug
+        end
+
+        it 'succeeds' do
+          expect(context).to be_a_success
         end
       end
     end

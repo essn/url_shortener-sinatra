@@ -10,7 +10,7 @@ class CreateShortUrl
 
     if context.slug
       context.short_url = ShortUrl.new(slug: context.slug,
-                                       secret_key: context.secret_key,
+                                       secret_key: secret_key,
                                        original_url: context.original_url)
     else
       slug = SecureRandom.alphanumeric(6)
