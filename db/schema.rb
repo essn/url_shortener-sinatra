@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_10_212843) do
+ActiveRecord::Schema.define(version: 2020_08_10_230100) do
 
   create_table "short_urls", force: :cascade do |t|
     t.string "original_url", null: false
-    t.string "short_url", null: false
     t.string "secret_key", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "slug", null: false
     t.index ["secret_key"], name: "index_short_urls_on_secret_key", unique: true
-    t.index ["short_url"], name: "index_short_urls_on_short_url", unique: true
+    t.index ["slug"], name: "index_short_urls_on_slug", unique: true
   end
 
 end
