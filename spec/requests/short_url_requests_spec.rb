@@ -108,4 +108,45 @@ RSpec.describe 'Short Url Requests' do
       end
     end
   end
+
+  describe 'GET /:slug' do
+    describe 'success' do
+      let(:short_url) { create(:short_url) }
+
+      before { get "/#{short_url.slug}" }
+
+      it 'redirects to the original url' do
+        expect(last_response.location).to eq short_url.original_url
+      end
+
+      it 'returns status 303' do
+        expect(last_response.status).to eq 303
+      end
+    end
+
+    describe 'error' do
+      # TODO: Cannot get RSpec and Sinatra to place nice with content types...
+      xdescribe 'request is from a browser' do
+        before do
+          get '/nope', {}, headers: { 'CONTENT_TYPE' => 'text/html' }
+        end
+
+        it 'redirects to /404.html' do
+          expect(last_response.location).to match %r{/404\.html}
+        end
+
+        it 'returns status 303' do
+          expect(last_response.status).to eq 303
+        end
+      end
+
+      describe 'request is not from a browser' do
+        before { get '/nope' }
+
+        it 'returns status 404' do
+          expect(last_response.status).to eq 404
+        end
+      end
+    end
+  end
 end

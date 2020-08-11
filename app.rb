@@ -6,6 +6,7 @@ require 'validate_url'
 require 'interactor'
 
 set :bind, '0.0.0.0' # bind to all interfaces
+set :public_folder, File.dirname(__FILE__) + '/public'
 
 configure :development do
   require 'pry'
@@ -54,4 +55,19 @@ delete '/short_url/:slug' do
 
   short_url.delete
   status 204
+end
+
+get '/:slug' do
+  short_url = ShortUrl.find_by(slug: params[:slug])
+
+  unless short_url
+    t = %w[text/css text/html application/javascript]
+
+    # Redirect to generic 404 HTML page if not found
+    return redirect '/404.html', 303 if request.preferred_type(t) == 'text/html'
+
+    halt 404, message: "Short url #{params[:slug]} does not exist."
+  end
+
+  redirect short_url.original_url, 303
 end
